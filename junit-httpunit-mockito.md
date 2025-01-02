@@ -262,3 +262,196 @@ if (obj == null) {
 }
 ```
 
+
+# Mockito Framework
+
+Mockito is a mocking framework built on top of the JUnit tool. It is primarily used to perform unit testing by creating mock objects for local or external dependencies. This allows developers to test the business logic of a service class independently, without requiring the completion of dependent components.
+
+---
+
+## Key Concepts of Mockito
+
+### Why Mockito?
+In a typical application structure:
+```
+Service Class (Business Logic) -> DAO Class (Persistence Logic) -> Database
+```
+If the DAO class implementation is incomplete but the service class is ready, Mockito enables us to:
+- Create a **mock object** (fake or dummy object) for the DAO class.
+- Inject the mock object into the service class.
+- Write and execute unit tests for the service class without needing a functional DAO class.
+
+### Types of Mocking in Mockito
+1. **Mock Object / Fake Object**:
+   - A temporary object created for testing purposes.
+   - Primarily used to mock dependencies.
+
+2. **Stub Object**:
+   - Adds some predefined functionality to the mock object.
+   - For example, it specifies certain outputs for specific inputs.
+
+3. **Spy Object**:
+   - A partial mock object or half-mock object.
+   - It uses real object functionality where available and predefined behavior otherwise.
+   - Requires a real object in addition to the spy.
+
+### Key Note:
+- **In-memory Class / Proxy Class**:
+  These are classes generated at runtime to mock or stub the behavior of real objects.
+
+---
+
+## How to Implement Mockito in Your Project
+
+### Step 1: Add Mockito Dependency
+Include the Mockito library in your project. For a Maven project, add the following dependency:
+```xml
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>5.x.x</version>
+    <scope>test</scope>
+</dependency>
+```
+For Gradle:
+```groovy
+testImplementation 'org.mockito:mockito-core:5.x.x'
+```
+
+### Step 2: Create a Mock Object
+```java
+import static org.mockito.Mockito.*;
+
+// Create mock object
+DAOClass daoMock = mock(DAOClass.class);
+```
+
+### Step 3: Define Behavior of Mock Object
+```java
+// Specify behavior for mock methods
+when(daoMock.getData()).thenReturn("Mock Data");
+```
+
+### Step 4: Inject Mock into Service Class
+```java
+ServiceClass service = new ServiceClass();
+service.setDAOClass(daoMock); // Dependency Injection
+```
+
+### Step 5: Write and Execute Test Cases
+```java
+@Test
+public void testServiceMethod() {
+    String result = service.businessMethod();
+    assertEquals("Expected Data", result);
+}
+```
+
+---
+
+## Mockito with Annotations
+
+### Common Annotations in Mockito
+- `@Mock`: Creates a mock object.
+- `@InjectMocks`: Injects mock objects into the dependent object.
+- `@Spy`: Creates a spy object.
+- `@Captor`: Captures argument values passed to a mock method.
+- `@RunWith(MockitoJUnitRunner.class)`: Enables Mockito annotations in test classes.
+
+### Example: Using Mockito Annotations
+```java
+@ExtendWith(MockitoExtension.class)
+public class ServiceTest {
+
+    @Mock
+    private DAOClass daoMock;
+
+    @InjectMocks
+    private ServiceClass service;
+
+    @Test
+    public void testBusinessMethod() {
+        // Define mock behavior
+        when(daoMock.getData()).thenReturn("Mock Data");
+
+        // Call service method
+        String result = service.businessMethod();
+
+        // Assert the result
+        assertEquals("Expected Data", result);
+    }
+}
+```
+
+---
+
+## Popular Mockito Frameworks
+
+1. **Mockito**: The most commonly used mocking library.
+2. **JMockito**: Provides a fluent interface for mocking.
+3. **EasyMock**: An alternative mocking framework.
+4. **PowerMock**: Extends Mockito to handle static, final, and private methods.
+
+---
+
+## Working with Mockito without Annotations
+```java
+@Test
+public void testList() {
+	// Mock object
+	List<String> listMock = Mockito.mock(ArrayList.class); // Mock
+	listMock.add("Table");
+
+	// Spy object
+	// List<String> listSpy = Mockito.spy(ArrayList.class); // Spy
+	List<String> listSpy = Mockito.spy(new ArrayList()); // Spy
+	listSpy.add("Table");
+
+	Mockito.when(listMock.size()).thenReturn(10); // Stub on Mock obj
+	Mockito.when(listSpy.size()).thenReturn(10); // Stub on Spy obj
+
+	System.out.println(listMock.size() + " " + listSpy.size());
+}
+
+// Result: 
+// 10 10 (If Mockito.when(...) statements are not commented)
+// 0 1 (If Mockito.when(...) statements are commented)
+```
+### Note: 
+- Spy objects are useful to check how many time methods are called. Whether they are called or not because spy object is always linked with real object. (For this we can use Mockito.verify(...) method)
+
+---
+
+## Working with Mockito with Annotations
+```java
+public class LoginAppTest {
+  @InjectMocks
+  private LoginAppServiceImpl loginAppService; // mocking to service class
+
+  @Mock
+  private LoginAppDAO loginAppDAOMock; // mock object
+
+  // @Spy
+  // private LoginAppDAO loginAppDAOSpy; // spy object
+
+  @BeforeAll
+  public void init() {
+      MockitoAnnotations.openMocks(this);
+  }
+
+  @Test
+  public void testLoginApp() {
+  // stub
+    ...
+    ...
+  }  
+```
+
+- **Mock**: To generate mock objects.
+- **Spy**: To generate spy objects.
+- **InjectMocks**: To inject mock or spy object to service.
+- **`MockitoAnnotation.openMocks(this);`**: Call this method in @BeforeAll or constructor testcase class in order to activate Mockito Annotations
+
+
+
+
