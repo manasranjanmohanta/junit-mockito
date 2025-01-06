@@ -179,6 +179,7 @@ public static void clearOnce() {
 6. **@DisplayName**: o give programmer choice non-technical names to test case class and test methods.
 7. **@TestMethodOrder**: Useful to specify execution order of test methods with different possibilities (While working with we should add @Order(n) while working with Order Annotation class)
 ```java
+// we can mention @TestMethodOrder in both class or method
 @TestMethodOrder(value=OrderAnnotation.class) // MethodOrder.MethodName.class or MethodOrder.DisplayName.class
 @Order(0) / @Order(1) / @Order(-10)
 ```
