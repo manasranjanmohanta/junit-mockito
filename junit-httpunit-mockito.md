@@ -92,22 +92,6 @@ Possible responses:
 |                 | @TestMethodOrder | Specify execution order of tests           |
 |                 | @Order          | Specify order for individual tests          |
 
-### Assertions Comparison
-| **JUnit4**       | **JUnit5**       |
-|------------------|------------------|
-| fail            | fail            |
-| assertTrue      | assertTrue      |
-| assertThat      | NA              |
-| assertSame      | assertSame      |
-| assertNull      | assertNull      |
-| assertNotSame   | assertNotSame   |
-| assertNotEquals | assertNotEquals |
-| assertNotNull   | assertNotNull   |
-| assertFalse     | assertFalse     |
-| assertEquals    | assertEquals    |
-| assertArrayEquals | assertArrayEquals |
-|                  | assertAll       |
-|                  | assertThrows    |
 
 ---
 
@@ -183,33 +167,7 @@ public static void clearOnce() {
 @TestMethodOrder(value=OrderAnnotation.class) // MethodOrder.MethodName.class or MethodOrder.DisplayName.class
 @Order(0) / @Order(1) / @Order(-10)
 ```
-
-### Assertions
-1. **assertThrows**: Check if the expected exception is thrown.
-```java
-Assertions.assertThrows(IllegalArgumentException.class, () -> {
-    service.calcSimpleAmount(0, 0, 0);
-});
-```
-
-2. **assertTimeout**: Check if a method completes within a specified time.
-```java
-assertTimeout(Duration.ofMillis(20000), () -> {
-    service.calcSimpleInterestAmount(10000, 2, 2);
-});
-```
-
-3. **assertEquals**: Verify expected and actual results.
-```java
-assertEquals(expected, actual, "Custom error message");
-```
-
-4. **assertTrue/assertFalse**: Check boolean conditions.
-5. **assertNull/assertNotNull**: Checks whether given object is null (assertNull) or not null (assertNotNull).
-6. **assertSame/assertNotSame**: Verify references point to the same object.
-7. **assertDoesNotThrow** : Check if the method does not throw exception.
-
----
+--- 
 
 ## Environment-Based Testing
 Applications are typically executed in these environments:
@@ -237,7 +195,58 @@ Applications are typically executed in these environments:
     </configuration>
 </plugin>
 ```
+### Assertions
 
+### Asset API:
+- It is used to validate Test, IS CURRENT TEST PASS/FAIL?
+- Expected value is compared with Actual value. (If values are matching TEST PASS, else TEST FAIL.
+- JUnit 5 has provided clas : `Assetions` (org.junit.jupiter.api) - which contains all static methods "assert methods"
+- 
+
+### Assertions Comparison
+| **JUnit4**       | **JUnit5**       |
+|------------------|------------------|
+| fail            | fail            |
+| assertTrue      | assertTrue      |
+| assertThat      | NA              |
+| assertSame      | assertSame      |
+| assertNull      | assertNull      |
+| assertNotSame   | assertNotSame   |
+| assertNotEquals | assertNotEquals |
+| assertNotNull   | assertNotNull   |
+| assertFalse     | assertFalse     |
+| assertEquals    | assertEquals    |
+| assertArrayEquals | assertArrayEquals |
+|                  | assertAll       |
+|                  | assertThrows    |
+
+1. **assertThrows**: Check if the expected exception is thrown.
+```java
+Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    service.calcSimpleAmount(0, 0, 0);
+});
+```
+
+2. **assertTimeout**: Check if a method completes within a specified time.
+```java
+assertTimeout(Duration.ofMillis(20000), () -> {
+    service.calcSimpleInterestAmount(10000, 2, 2);
+});
+```
+
+3. **assertEquals**: Used to compare expected value with actual value (equals or not) - compares two objects data
+```java
+assertEquals(expected, actual, "Custom error message");
+```
+
+4. **assertTrue/assertFalse**: Check boolean condition/expression/value.
+   - **assertTrue()**: boolean value is expected as TRUE, else TEST FAIL.
+   - **assetFalse()**: boolean value is expected as FALSE, else TEST FAIL.
+6. **assertNull/assertNotNull**: Checks whether given object is null (assertNull) or not null (assertNotNull).
+7. **assertSame/assertNotSame**: Verify references point to the same object. (compares two object references)
+8. **assertDoesNotThrow** : Check if the method does not throw exception.
+
+---
 ---
 
 ## Additional JUnit Features
@@ -256,7 +265,8 @@ Applications are typically executed in these environments:
 3. **@EmptySource, @NullSource, @NullAndEmptySource**
 - Test empty, null, and both null and empty values.
 
-4. **fail()**: If you want to write custom failure message while checking then use fail method
+4. **fail()**: This is used for multiple checking conditions, if they are not met manually FAIL TEST CASE.
+- If you want to write custom failure message while checking then use fail method
 ```java
 if (obj == null) {
     Assertions.fail("Object should not be null");
